@@ -1,12 +1,6 @@
 import pandas as pd
 
 
-# sp - a Spotify OAuth object that allows the function to access the Spotify API
-# sp_call - function that calls a specific endpoint of the Spotify API and returns a JSON response.
-# An API endpoint is a specific URL that can be used to interact with a particular resource or set of resources through a web service. 
-# In the case of the Spotify API, an endpoint might correspond to a specific feature or dataset, such as retrieving information about a particular artist, 
-# searching for tracks or albums, or accessing user-related data.
-# The function is designed to overcome the 50-item limit on API calls to the Spotify API.
 def offset_api_limit(sp, sp_call):
     """
     Get all (non-limited) artists/tracks from a Spotify API call.
@@ -15,11 +9,9 @@ def offset_api_limit(sp, sp_call):
     :return: list of artists/tracks
     """
     results = sp_call
-    # checking if the results dictionary has a key called 'artists'.
     if 'items' not in results.keys():
         results = results['artists']
-        # print("results: ", results)
-    data = results['items']# do data przypisuujemy wartości któe są za items (to jest jak sie wypriintuje top_tracks)
+    data = results['items']
     while results['next']:
         results = sp.next(results)
         if 'items' not in results.keys():
@@ -35,9 +27,8 @@ def get_artists_df(artists):
     :return: formatted pandas dataframe
     """
     artists_df = pd.DataFrame(artists)
-    # artists_df['followers'] = artists_df['followers'].apply(lambda x: x['total'])
+    artists_df['followers'] = artists_df['followers'].apply(lambda x: x['total'])
     return artists_df[['id', 'uri', 'type', 'name', 'genres', 'followers']]
-
 
 
 def get_tracks_df(tracks):
